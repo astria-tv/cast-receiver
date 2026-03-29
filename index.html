@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Astria</title>
+  <link rel="stylesheet" href="style.css">
+  <!--
+    Cast Application Framework (CAF) Receiver SDK v3.
+    The <cast-media-player> element below is required by CAF for video rendering.
+  -->
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+</head>
+<body>
+  <!-- Required by CAF — handles actual video decoding/rendering -->
+  <cast-media-player></cast-media-player>
+
+  <!-- Buffering spinner (hidden by default via the `hidden` attribute) -->
+  <div id="buffering" hidden>
+    <div class="spinner"></div>
+  </div>
+
+  <!--
+    Info overlay — shown on load, while paused, and briefly when playback starts.
+    Fades out automatically after 4 s during playback.
+  -->
+  <div id="overlay">
+    <div id="metadata">
+      <!--
+        Poster image — hidden when no URL is provided.
+        The sender (useChromecast.ts) doesn't currently send a posterUrl,
+        so this will be hidden until that's wired up.
+      -->
+      <div id="poster"></div>
+      <div id="text-info">
+        <p id="subtitle"></p>
+        <h1 id="title"></h1>
+      </div>
+    </div>
+    <div id="progress-row">
+      <span id="time-current" class="time">0:00</span>
+      <div id="progress-bar">
+        <div id="progress-fill"></div>
+      </div>
+      <span id="time-total" class="time">0:00</span>
+    </div>
+  </div>
+
+  <script src="receiver.js"></script>
+</body>
+</html>
