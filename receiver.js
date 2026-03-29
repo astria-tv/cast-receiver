@@ -33,7 +33,13 @@ const els = {
   timeCurrent:  document.getElementById('time-current'),
   timeTotal:    document.getElementById('time-total'),
   buffering:    document.getElementById('buffering'),
+  errorDisplay: document.getElementById('error-display'),
 };
+
+function showError(msg) {
+  els.errorDisplay.textContent = msg;
+  els.errorDisplay.style.display = 'flex';
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -109,6 +115,7 @@ playerManager.setMessageInterceptor(
   cast.framework.messages.MessageType.LOAD,
   (request) => {
     applyMetadata(request.media?.metadata);
+    showError(`Loading: ${request.media?.contentId ?? request.media?.contentUrl ?? '(no url)'}`);
     showOverlay();
     return request;
   },
@@ -118,7 +125,10 @@ playerManager.setMessageInterceptor(
 
 playerManager.addEventListener(
   cast.framework.events.EventType.PLAYING,
-  () => showOverlay(4000),
+  () => {
+    els.errorDisplay.style.display = 'none';
+    showOverlay(4000);
+  },
 );
 
 playerManager.addEventListener(
@@ -129,6 +139,15 @@ playerManager.addEventListener(
 playerManager.addEventListener(
   cast.framework.events.EventType.ENDED,
   () => hideOverlay(),
+);
+
+playerManager.addEventListener(
+  cast.framework.events.EventType.ERROR,
+  (event) => {
+    const detail = event.detailedErrorCode ?? event.error ?? 'unknown';
+    const url = event.url ?? '';
+    showError(`Playback error: ${detail}\n${url}`);
+  },
 );
 
 playerManager.addEventListener(
