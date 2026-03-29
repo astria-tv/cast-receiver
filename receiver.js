@@ -144,9 +144,11 @@ playerManager.addEventListener(
 playerManager.addEventListener(
   cast.framework.events.EventType.ERROR,
   (event) => {
-    const detail = event.detailedErrorCode ?? event.error ?? 'unknown';
+    const detail = event.detailedErrorCode ?? 'unknown';
+    const reason = event.reason ?? '';
     const url = event.url ?? '';
-    showError(`Playback error: ${detail}\n${url}`);
+    const inner = event.error?.message ?? event.error ?? '';
+    showError(`Error ${detail}\n${reason}\n${inner}\n${url}`);
   },
 );
 
