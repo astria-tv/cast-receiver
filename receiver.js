@@ -69,8 +69,7 @@ function hideOverlay() {
 
 /**
  * Populate the UI from a CAF MediaMetadata object.
- * The sender (Player.tsx) passes: title, subtitle.
- * posterUrl is not currently sent but is handled if/when it's added.
+ * The sender (Player.tsx) passes: title, subtitle, and posterUrl (images[0].url).
  */
 function applyMetadata(metadata) {
   if (!metadata) return;
@@ -118,23 +117,18 @@ playerManager.setMessageInterceptor(
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 playerManager.addEventListener(
-  cast.framework.events.EventType.PLAYER_STATE,
-  ({ state }) => {
-    switch (state) {
-      case 'PLAYING':
-        // Show briefly then fade — lets the user see title/progress on playback start
-        showOverlay(4000);
-        break;
-      case 'PAUSED':
-        // Keep visible while paused
-        showOverlay();
-        break;
-      case 'IDLE':
-        // No media loaded
-        hideOverlay();
-        break;
-    }
-  },
+  cast.framework.events.EventType.PLAYING,
+  () => showOverlay(4000),
+);
+
+playerManager.addEventListener(
+  cast.framework.events.EventType.PAUSE,
+  () => showOverlay(),
+);
+
+playerManager.addEventListener(
+  cast.framework.events.EventType.ENDED,
+  () => hideOverlay(),
 );
 
 playerManager.addEventListener(
