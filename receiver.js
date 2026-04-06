@@ -187,4 +187,12 @@ playerManager.addEventListener(
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
-context.start({ playbackConfig });
+context.start({
+  playbackConfig,
+  // Force Shaka Player for HLS instead of native playback.  Native HLS sets the
+  // video src directly to the cross-origin manifest URL, which triggers the
+  // Chromecast frame security error "Domains, protocols and ports must match".
+  // Shaka fetches via XHR (respects CORS) and uses MSE — the video src becomes
+  // a same-origin blob: URL, avoiding the restriction entirely.
+  useShakaForHls: true,
+});
