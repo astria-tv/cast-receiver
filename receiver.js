@@ -179,7 +179,12 @@ playerManager.addEventListener(
     const detail = event.detailedErrorCode ?? 'unknown';
     const reason = event.reason ?? '';
     const url = event.url ?? '';
-    const inner = event.error?.message ?? event.error ?? '';
+    let inner = '';
+    if (event.error) {
+      inner = typeof event.error === 'string'
+        ? event.error
+        : (event.error.message ?? JSON.stringify(event.error));
+    }
     showError(`Error ${detail}\n${reason}\n${inner}\n${url}`);
   },
 );
