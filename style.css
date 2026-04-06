@@ -26,14 +26,11 @@ cast-media-player {
   inset: 0;
   width: 100%;
   height: 100%;
+  /* Suppress all built-in overlays — we render our own custom UI. */
   --watermark: none;
   --logo-image: none;
   --splash-image: none;
-  /* Hide the built-in metadata overlay — we render our own.
-     This also prevents CAF from fetching poster images (which would
-     resolve relative to cast.astria.tv and 404). */
   --background-image: none;
-  --metadata-visible: hidden;
   --playback-logo-image: none;
 }
 

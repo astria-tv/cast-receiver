@@ -202,6 +202,9 @@ playerManager.addEventListener(
 
 context.start({
   playbackConfig,
+  // Disable the built-in <cast-media-player> touch/overlay controls.
+  // We render our own custom overlay UI instead.
+  touchEnabled: false,
   // Force Shaka Player for HLS instead of native playback.  Native HLS sets the
   // video src directly to the cross-origin manifest URL, which triggers the
   // Chromecast frame security error "Domains, protocols and ports must match".
