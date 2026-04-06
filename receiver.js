@@ -115,13 +115,17 @@ function applyMetadata(metadata) {
 // ── Progress ──────────────────────────────────────────────────────────────────
 
 function updateProgress() {
-  const data = playerManager.getPlayerData();
-  if (!data || !(data.duration > 0)) return;
+  // playerManager.getPlayerData() doesn't exist in CAF v3.
+  // Read time from playerManager.getCurrentTimeSec() / getMediaInformation().
+  const mediaInfo = playerManager.getMediaInformation();
+  const currentTime = playerManager.getCurrentTimeSec?.() ?? 0;
+  const duration = mediaInfo?.duration ?? 0;
+  if (!(duration > 0)) return;
 
-  const pct = Math.min(100, (data.currentTime / data.duration) * 100);
+  const pct = Math.min(100, (currentTime / duration) * 100);
   els.progressFill.style.width = `${pct}%`;
-  els.timeCurrent.textContent = formatTime(data.currentTime);
-  els.timeTotal.textContent = formatTime(data.duration);
+  els.timeCurrent.textContent = formatTime(currentTime);
+  els.timeTotal.textContent = formatTime(duration);
 }
 
 // ── Message interceptors ──────────────────────────────────────────────────────
@@ -134,7 +138,6 @@ playerManager.setMessageInterceptor(
   cast.framework.messages.MessageType.LOAD,
   (request) => {
     applyMetadata(request.media?.metadata);
-    showError(`Loading: ${request.media?.contentId ?? request.media?.contentUrl ?? '(no url)'}`);
     showOverlay();
     return request;
   },
@@ -189,6 +192,10 @@ playerManager.addEventListener(
 
 context.start({
   playbackConfig,
+  // Disable the built-in <cast-media-player> metadata UI — we render our own
+  // overlay.  This also prevents CAF from trying to fetch metadata images,
+  // which would resolve relative to cast.astria.tv and 404.
+  disableIdleTimeout: false,
   // Force Shaka Player for HLS instead of native playback.  Native HLS sets the
   // video src directly to the cross-origin manifest URL, which triggers the
   // Chromecast frame security error "Domains, protocols and ports must match".
