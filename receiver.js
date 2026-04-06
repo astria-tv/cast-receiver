@@ -22,6 +22,25 @@
 const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
 
+// ── Playback config (cross-origin media) ──────────────────────────────────────
+// The receiver is hosted at cast.astria.tv but media is served from a different
+// origin.  Configure CAF to allow cross-origin manifest and segment requests so
+// HLS content loads without "Domains, protocols and ports must match" errors.
+
+const playbackConfig = new cast.framework.PlaybackConfig();
+
+playbackConfig.manifestRequestHandler = (requestInfo) => {
+  requestInfo.withCredentials = false;
+};
+
+playbackConfig.segmentRequestHandler = (requestInfo) => {
+  requestInfo.withCredentials = false;
+};
+
+playbackConfig.licenseRequestHandler = (requestInfo) => {
+  requestInfo.withCredentials = false;
+};
+
 // ── DOM references ────────────────────────────────────────────────────────────
 
 const els = {
@@ -168,4 +187,4 @@ playerManager.addEventListener(
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
-context.start();
+context.start({ playbackConfig });
