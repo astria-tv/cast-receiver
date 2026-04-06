@@ -7,13 +7,13 @@
   <link rel="stylesheet" href="style.css">
   <!--
     Cast Application Framework (CAF) Receiver SDK v3.
-    The <cast-media-player> element below is required by CAF for video rendering.
+    Using a plain <video> element + mediaElement option so we have
+    full control over the UI (no built-in overlay from <cast-media-player>).
   -->
   <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 </head>
 <body>
-  <!-- Required by CAF — handles actual video decoding/rendering -->
-  <cast-media-player></cast-media-player>
+  <video id="media-player" autoplay></video>
 
   <!-- Buffering spinner (hidden by default via the `hidden` attribute) -->
   <div id="buffering" hidden>

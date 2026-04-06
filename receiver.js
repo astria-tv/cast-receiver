@@ -125,7 +125,7 @@ function updateProgress() {
     if (typeof playerManager.getCurrentTimeSec === 'function') {
       currentTime = playerManager.getCurrentTimeSec();
     } else {
-      const video = document.querySelector('cast-media-player')?.shadowRoot?.querySelector('video');
+      const video = document.getElementById('media-player');
       currentTime = video?.currentTime ?? 0;
     }
 
@@ -202,9 +202,9 @@ playerManager.addEventListener(
 
 context.start({
   playbackConfig,
-  // Disable the built-in <cast-media-player> touch/overlay controls.
-  // We render our own custom overlay UI instead.
-  touchEnabled: false,
+  // Use our plain <video> element instead of <cast-media-player>.
+  // This gives us full UI control — no built-in overlay/controls.
+  mediaElement: document.getElementById('media-player'),
   // Force Shaka Player for HLS instead of native playback.  Native HLS sets the
   // video src directly to the cross-origin manifest URL, which triggers the
   // Chromecast frame security error "Domains, protocols and ports must match".
